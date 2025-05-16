@@ -3,6 +3,10 @@ from routes import router
 
 app = FastAPI()
 
+@app.get("/")
+async def root():
+    print("Проверка маршрута")
+    return {"status": "API работает"}
 
 @app.on_event("startup")
 async def startup_event():
