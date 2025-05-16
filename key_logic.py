@@ -105,5 +105,5 @@ def deactivate_key(cursor, key_id):
     SET isUsed = %s
     WHERE keyId = %s
         """,
-        (False, key_id)
+        (True, key_id)
     )
