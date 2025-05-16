@@ -70,7 +70,7 @@ def get_key_info(cursor, key: str):
     if not key_row:
         raise HTTPException(status_code=404, detail="Key not found")
     keyid, duration_days, is_active = key_row
-    if not is_active:
+    if is_active:
         raise HTTPException(status_code=400, detail="Key is already used")
     return keyid, duration_days
 
