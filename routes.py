@@ -66,7 +66,7 @@ async def register_user(data: RegisterData):
         hashed_password = hash_password(data.password)
 
         # Сохраняем нового пользователя в базе данных
-        cursor.execute("INSERT INTO Users (UserLogin, UserPassword, UserEmail) VALUES (?, ?, ?)",
+        cursor.execute("INSERT INTO Users (UserLogin, UserPassword, UserEmail) VALUES (%s, %s, %s)",
                        (data.login, hashed_password, data.email))
         conn.commit()
     print(f"Пользователь: login - {data.login}, password - {data.password}, email - {data.email} был зарегистрирован")
@@ -80,7 +80,7 @@ async def logIn_user(data: LoginData):
         cursor = conn.cursor()
 
         # Ищем пользователя по логину
-        cursor.execute("SELECT UserPassword FROM Users WHERE UserLogin = ?", (data.login,))
+        cursor.execute("SELECT UserPassword FROM Users WHERE UserLogin = %s", (data.login,))
         row = cursor.fetchone()
 
         if not row:
