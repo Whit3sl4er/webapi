@@ -4,6 +4,9 @@ from pydantic import BaseModel
 import os
 from fastapi import APIRouter, HTTPException, status
 from db import get_connection
+import random
+import string
+from datetime import datetime, timezone
 
 router = APIRouter()
 
@@ -16,6 +19,9 @@ class RegisterData(BaseModel):
 class LoginData(BaseModel):
     login: str
     password: str
+
+class KeyCreateRequest(BaseModel):
+    keyDuration: int
 
 @router.get("/")
 async def root():
@@ -56,6 +62,34 @@ async def get_subscriptions():
             return {"subscriptions": subscriptions}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/create-key")
+async def create_license_key(request: KeyCreateRequest):
+    duration = request.key_type.lower()
+    if duration not in [7, 30, 180]:
+        raise HTTPException(status_code=400, detail="Invalid key type")
+
+    key_string = generate_key_string()
+    created_at = datetime.now(timezone.utc)
+
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                INSERT INTO LicenseKeys (KeyValue, DurationDays, IsUsed, CreatedAt)
+                VALUES (%s, %s, false, %s)
+                RETURNING KeyID
+            """, (key_string, duration, created_at))
+            key_id = cursor.fetchone()[0]
+            conn.commit()
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"DB error: {str(e)}")
+
+    return {
+        "key": key_string,
+        "duration_days": duration,
+        "key_id": key_id
+    }
 
 # Функция регистрации
 @router.post("/register")
@@ -112,3 +146,6 @@ def verify_password(password: str, stored_hash: str) -> bool:
     iterations = int(iterations)
     pbkdf2 = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, iterations, dklen=32)
     return pbkdf2 == original_hash
+
+def generate_key_string(length=16):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
