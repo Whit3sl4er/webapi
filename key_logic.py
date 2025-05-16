@@ -56,7 +56,7 @@ async def activate_license_key(data: models.KeyActivateRequest):
         new_startdate = now
         new_enddate = now + timedelta(days=duration_days)
         create_subscription(cursor, data.user_id, keyid, new_startdate, new_enddate, now)
-
+    deactivate_key(cursor, keyid)
     conn.commit()
 
     return {
@@ -96,4 +96,14 @@ def create_subscription(cursor, user_id: int, keyid: int, startdate: datetime, e
         VALUES (%s, %s, %s, %s, %s)
         """,
         (user_id, keyid, startdate, enddate, createdat)
+    )
+
+def deactivate_key(cursor, key_id):
+    cursor.execute(
+        """
+    UPDATE LicenseKeys
+    SET isUsed = %s
+    WHERE keyId = %s
+        """,
+        (False, key_id)
     )
