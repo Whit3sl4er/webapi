@@ -87,7 +87,7 @@ async def get_license_keys():
 
 @router.post("/create-key")
 async def create_license_key(request: KeyCreateRequest):
-    duration = request.key_type.lower()
+    duration = request.keyDuration
     if duration not in [7, 30, 180]:
         raise HTTPException(status_code=400, detail="Invalid key type")
 
