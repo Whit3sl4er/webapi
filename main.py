@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import router  # Импортируем роутеры с функциями регистрации и авторизации
+from routes import router
 
 app = FastAPI()
 

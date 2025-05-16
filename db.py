@@ -1,11 +1,10 @@
 import os
 import psycopg2
-from psycopg2 import sql
-
-DATABASE_URL = os.getenv("DATABASE_URL")
 
 def get_connection():
-    return psycopg2.connect(DATABASE_URL)
+    conn_str = os.getenv("DATABASE_URL")
+    print(f"Conn string: '{conn_str}'")
+    return psycopg2.connect(conn_str)
 
 def create_tables():
     with get_connection() as conn:
