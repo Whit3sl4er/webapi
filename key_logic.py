@@ -41,6 +41,7 @@ async def activate_license_key(data: models.KeyActivateRequest):
 
     if subscription:
         subscriptionid, startdate, enddate = subscription
+        now = datetime.now().date()
         if enddate and enddate > now:
             # Продлить с текущей даты окончания
             new_startdate = startdate  # можно оставить старую дату начала
