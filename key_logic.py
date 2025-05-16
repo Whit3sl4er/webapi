@@ -35,7 +35,7 @@ async def activate_license_key(data: models.KeyActivateRequest):
     with get_connection() as conn:
         cursor = conn.cursor()
 
-    keyid, duration_days = get_key_info(cursor, data.key)
+    keyid, duration_days = get_key_info(cursor, data.keyValue)
     now = datetime.now(timezone.utc)
     subscription = get_subscription(cursor, data.user_id)
 
