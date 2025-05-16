@@ -28,10 +28,10 @@ async def activate_license_key(request: models.KeyActivateRequest):
 
 # Функция регистрации
 @router.post("/register")
-async def register_user(data: models.RegisterData):
-    return await authentication.register_user(data)
+async def register_user(request: models.RegisterData):
+    return await authentication.register_user(request)
 
 # Функция авторизации
 @router.post("/login")
-async def login_user(data: models.LoginData):
-    return await authentication.logIn_user(data)
+async def login_user(request: models.LoginData):
+    return await authentication.logIn_user(request)
