@@ -14,6 +14,7 @@ class KeyCreateRequest(BaseModel):
 
 class KeyActivateRequest(BaseModel):
     keyValue: str
+    user_id: int
 
 class ActivateKeyRequest(BaseModel):
     user_id: int
