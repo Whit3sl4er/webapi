@@ -32,6 +32,6 @@ async def register_user(request: models.RegisterData):
     return await authentication.register_user(request)
 
 # Функция авторизации
-@router.post("/logIn")
+@router.post("/login")
 async def login_user(request: models.LoginData):
     return await authentication.logIn_user(request)
